@@ -1,0 +1,2 @@
+kubeadm join 10.31.1.101:6443 --token wrhdo8.8taepdnc425rcr2b \
+	--discovery-token-ca-cert-hash sha256:6cd00aa47fb9ad2ba6b2f05a82ac4c09c7f826c1e2ed9ce21ed8b706a1f77241
