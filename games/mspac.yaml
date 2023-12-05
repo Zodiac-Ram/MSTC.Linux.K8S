@@ -1,0 +1,37 @@
+apiVersion: retro.sparkfabrik.com/v1
+kind: Game
+metadata:
+  name: mspac
+spec:
+  name: "MS Pac-Man"
+  zipUrl: "https://dosgames.com/files/msppcv12.zip"
+  dir: "."
+  exe: "MSPAC.EXE"
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: games-ingress-mspac
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.org/websocket-services: "mspac"
+spec:
+  ingressClassName: "nginx"
+  rules:
+    - http:
+        paths:
+          - path: /(games/mspac/)(ws/.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: mspac
+                port:
+                  number: 8081
+          - path: /(games/mspac)(?:/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: mspac
+                port:
+                  number: 8080

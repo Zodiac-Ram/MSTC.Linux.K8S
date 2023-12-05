@@ -1,0 +1,38 @@
+apiVersion: retro.sparkfabrik.com/v1
+kind: Game
+metadata:
+  name: quake
+spec:
+  name: "Quake"
+  zipUrl: "https://archive.org/download/msdos_Quake106_shareware/msdos_Quake106_shareware.zip"
+  dir: "."
+  exe: "QUAKE.EXE"
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: games-ingress-quake
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/rewrite-target: /$2
+    nginx.org/websocket-services: "quake"
+
+spec:
+  ingressClassName: "nginx"
+  rules:
+    - http:
+        paths:
+          - path: /(games/quake/)(ws/.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: quake
+                port:
+                  number: 8081
+          - path: /(games/quake)(?:/|$)(.*)
+            pathType: ImplementationSpecific
+            backend:
+              service:
+                name: quake
+                port:
+                  number: 8080
